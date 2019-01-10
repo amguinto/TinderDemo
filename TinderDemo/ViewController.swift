@@ -13,9 +13,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let grayView = UIView()
-        grayView.backgroundColor = .gray
-        
         // Iterate through colors and takes return values and returns an array
         let subViews = [UIColor.gray, UIColor.darkGray, UIColor.black].map { (color) -> UIView in
             let v = UIView()
@@ -23,45 +20,41 @@ class ViewController: UIViewController {
             
             return v
         }
-        
-        // Turns the top color into a subview of the current subview using the subViews colors array
+
         let topStackView = UIStackView(arrangedSubviews: subViews)
         topStackView.distribution = .fillEqually
-
-        topStackView.backgroundColor = .red
         topStackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        let blueView = UIView()
-        blueView.backgroundColor = .blue
+        let bottomStackView = UIStackView(arrangedSubviews: subViews)
+        bottomStackView.distribution = .fillEqually
+        bottomStackView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+
+        
+        let middleView = UIView()
+        middleView.backgroundColor = .blue
         
         
-        // TODO: Implement bottomStackView
-        let yellowView = UIView()
-        yellowView.backgroundColor = .yellow
-        yellowView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        
-        let stackView = UIStackView(arrangedSubviews: [topStackView, blueView, yellowView])
+        let overrallStackView = UIStackView(arrangedSubviews: [topStackView, middleView, bottomStackView])
         
         // Splits red and blue view evenly
         // stackView.distribution = .fillEqually
 
         // Splits vertically
-        stackView.axis = .vertical
+        overrallStackView.axis = .vertical
         
-        view.addSubview(stackView)
-        stackView.frame = .init(x: 0, y: 0, width: 300, height: 200)
-        
+        view.addSubview(overrallStackView)
+
         // Enables autolayout
         // Use extension file
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        overrallStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        overrallStackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         
-        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        overrallStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         
-        stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        overrallStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        overrallStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
     }
 

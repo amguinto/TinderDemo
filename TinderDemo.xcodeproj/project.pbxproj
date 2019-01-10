@@ -54,6 +54,7 @@
 		E109CC7121E585430019FECD /* TinderDemo */ = {
 			isa = PBXGroup;
 			children = (
+				E109CC8521E6E7EE0019FECD /* Views */,
 				E109CC8421E587740019FECD /* Extensions */,
 				E109CC7221E585430019FECD /* AppDelegate.swift */,
 				E109CC7421E585430019FECD /* ViewController.swift */,
@@ -70,6 +71,13 @@
 			children = (
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E109CC8521E6E7EE0019FECD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
