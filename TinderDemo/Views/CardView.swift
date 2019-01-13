@@ -34,8 +34,22 @@ class CardView: UIStackView {
     }
     
     fileprivate func handleChanged(_ gesture: UIPanGestureRecognizer) {
+        
         let translation = gesture.translation(in: nil)
-        self.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
+        
+        // Rotation
+        let degrees: CGFloat = translation.x / 20
+        let radians = degrees * .pi / 180
+        
+        let rotationalTransformation = CGAffineTransform(rotationAngle: radians)
+        
+        // Set current card transformation to rotate and translate
+        self.transform = rotationalTransformation.translatedBy(x: translation.x, y: translation.y)
+        
+        /// Pan card to left/right
+        //  let translation = gesture.translation(in: nil)
+        //  self.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
+        
     }
     
     @objc fileprivate func handlePan(gesture: UIPanGestureRecognizer) {
