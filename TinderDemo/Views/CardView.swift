@@ -10,7 +10,8 @@ import UIKit
 
 class CardView: UIStackView {
     
-    fileprivate let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
+    let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
+    let informationLabel = UILabel()
     
     // Constructor
     override init(frame: CGRect) {
@@ -22,7 +23,20 @@ class CardView: UIStackView {
         addSubview(imageView)
         imageView.fillSuperview()
         
-        // TODO: Label
+        addSubview(informationLabel)
+        
+        // Anchor the information label and adds padding
+        informationLabel.anchor(top: nil, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16))
+        
+        /// TODO: Refactor extensions
+        informationLabel.font = UIFont.systemFont(ofSize: 34, weight: .heavy)
+        informationLabel.textColor = UIColor.white
+        
+        // Allows multiple lines in label
+        informationLabel.numberOfLines = 0
+        
+        // Scales picture on card
+        imageView.contentMode = .scaleAspectFill
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGesture)
@@ -35,7 +49,7 @@ class CardView: UIStackView {
         let threshold: CGFloat = 100
         let shouldDismissCard = gesture.translation(in: nil).x > threshold
         
-        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             
             // Fling card away
             if shouldDismissCard {
@@ -47,9 +61,17 @@ class CardView: UIStackView {
             }
         }) { (_) in
             
-            // Bring card back
+            // If rotated/moved but not flung away, the card will return back to the center
             self.transform = .identity
-            self.frame = CGRect(x: 0, y: 0, width: self.superview!.frame.width, height: self.superview!.frame.height)
+            
+            // Bring card back
+            // self.frame = CGRect(x: 0, y: 0, width: self.superview!.frame.width, height: self.superview!.frame.height)
+            
+            // Remove Card from view
+            if shouldDismissCard {
+                self.removeFromSuperview()
+            }
+            
         }
     }
     
