@@ -12,6 +12,7 @@ class CardView: UIStackView {
     
     fileprivate let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
     
+    // Constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -21,13 +22,16 @@ class CardView: UIStackView {
         addSubview(imageView)
         imageView.fillSuperview()
         
+        // TODO: Label
+        
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGesture)
     }
     
+    // When user stops touching the screen
     fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {
         
-        // Point where card will be flung
+        // Card will be flung along the x-axis
         let threshold: CGFloat = 100
         let shouldDismissCard = gesture.translation(in: nil).x > threshold
         
@@ -49,11 +53,12 @@ class CardView: UIStackView {
         }
     }
     
+    // When user is holding the screen the screen
     fileprivate func handleChanged(_ gesture: UIPanGestureRecognizer) {
         
         let translation = gesture.translation(in: nil)
         
-        // Rotation
+        // Rotation along x-axis
         let degrees: CGFloat = translation.x / 20
         let radians = degrees * .pi / 180
         
@@ -64,6 +69,7 @@ class CardView: UIStackView {
 
     }
     
+    // Cases when the user interacts when touching the screen
     @objc fileprivate func handlePan(gesture: UIPanGestureRecognizer) {
         
         // Drag card
