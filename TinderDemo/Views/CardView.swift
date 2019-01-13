@@ -25,11 +25,27 @@ class CardView: UIStackView {
         addGestureRecognizer(panGesture)
     }
     
-    fileprivate func handleEnded() {
+    fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {
+        
+        // Point where card will be flung
+        let threshold: CGFloat = 100
+        let shouldDismissCard = gesture.translation(in: nil).x > threshold
+        
         UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-            self.transform = .identity
+            
+            // Fling card away
+            if shouldDismissCard {
+                
+                self.frame = CGRect(x: 1000, y: 0, width: self.frame.width, height: self.frame.height)
+            
+            } else {
+                self.transform = .identity
+            }
         }) { (_) in
             
+            // Bring card back
+            self.transform = .identity
+            self.frame = CGRect(x: 0, y: 0, width: self.superview!.frame.width, height: self.superview!.frame.height)
         }
     }
     
@@ -45,20 +61,17 @@ class CardView: UIStackView {
         
         // Set current card transformation to rotate and translate
         self.transform = rotationalTransformation.translatedBy(x: translation.x, y: translation.y)
-        
-        /// Pan card to left/right
-        //  let translation = gesture.translation(in: nil)
-        //  self.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
-        
+
     }
     
     @objc fileprivate func handlePan(gesture: UIPanGestureRecognizer) {
+        
         // Drag card
         switch gesture.state {
         case .changed:
             handleChanged(gesture)
         case .ended:
-            handleEnded()
+            handleEnded(gesture)
         default:
             ()
         }
