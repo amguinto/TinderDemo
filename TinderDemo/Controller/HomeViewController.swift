@@ -22,8 +22,9 @@ class HomeViewController: UIViewController {
     
     let cardViewModels = [
         User(name: "Kelly", age: 23, profession: "Music DJ", imageName: "lady5c").toCardViewModel(),
-        User(name: "Jane", age: 26, profession: "Teacher", imageName: "lady4c").toCardViewModel()
-
+        User(name: "Jane", age: 26, profession: "Teacher", imageName: "lady4c").toCardViewModel(),
+        Advertiser(title: "Slide Out Menu", brandName: "AG3 Studios", posterPhotoName: "slide_out_menu_poster").toCardViewModel()
+        
     ]
     override func viewDidLoad() {
         super.viewDidLoad()
