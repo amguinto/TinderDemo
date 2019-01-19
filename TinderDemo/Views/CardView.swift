@@ -10,8 +10,17 @@ import UIKit
 
 class CardView: UIStackView {
     
-    let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
-    let informationLabel = UILabel()
+    var cardViewModel: CardViewModel! {
+        didSet {
+            imageView.image = UIImage(named: cardViewModel.imageName)
+            informationLabel.attributedText = cardViewModel.attributedString
+            informationLabel.textAlignment = cardViewModel.textAlignment
+        }
+    }
+    fileprivate let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
+    fileprivate let informationLabel = UILabel()
+    fileprivate let threshold: CGFloat = 100
+
     
     // Constructor
     override init(frame: CGRect) {
@@ -46,7 +55,6 @@ class CardView: UIStackView {
     fileprivate func handleEnded(_ gesture: UIPanGestureRecognizer) {
         
         // Card will be flung along the x-axis
-        let threshold: CGFloat = 100
         let shouldDismissCard = gesture.translation(in: nil).x > threshold
         
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
