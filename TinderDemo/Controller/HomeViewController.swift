@@ -15,10 +15,10 @@ class HomeViewController: UIViewController {
     let card = UIView()
     let topStackView = HomeTopNavigationStackView()
     
-    let users = [
-        User(name: "Kelly", age: 23, profession: "Music DJ", imageName: "lady5c"),
-        User(name: "Jane", age: 26, profession: "Teacher", imageName: "lady4c")
-    ]
+//    let users = [
+//        User(name: "Kelly", age: 23, profession: "Music DJ", imageName: "lady5c"),
+//        User(name: "Jane", age: 26, profession: "Teacher", imageName: "lady4c")
+//    ]
     
     let cardViewModels = [
         User(name: "Kelly", age: 23, profession: "Music DJ", imageName: "lady5c").toCardViewModel(),
