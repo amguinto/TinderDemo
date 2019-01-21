@@ -17,35 +17,17 @@ class CardView: UIStackView {
             informationLabel.textAlignment = cardViewModel.textAlignment
         }
     }
+    
     fileprivate let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
     fileprivate let informationLabel = UILabel()
     fileprivate let threshold: CGFloat = 100
-
+    fileprivate let gradientLayer = CAGradientLayer()
     
     // Constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.cornerRadius = 10
-        clipsToBounds = true
-        
-        addSubview(imageView)
-        imageView.fillSuperview()
-        
-        addSubview(informationLabel)
-        
-        // Anchor the information label and adds padding
-        informationLabel.anchor(top: nil, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16))
-        
-        /// TODO: Refactor extensions
-        informationLabel.font = UIFont.systemFont(ofSize: 34, weight: .heavy)
-        informationLabel.textColor = UIColor.white
-        
-        // Allows multiple lines in label
-        informationLabel.numberOfLines = 0
-        
-        // Scales picture on card
-        imageView.contentMode = .scaleAspectFill
+        setupLayout()
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGesture)
@@ -104,6 +86,10 @@ class CardView: UIStackView {
         
         // Drag card
         switch gesture.state {
+        case .began:
+            superview?.subviews.forEach({ (subview) in
+                subview.layer.removeAllAnimations()
+            })
         case .changed:
             handleChanged(gesture)
         case .ended:
@@ -111,6 +97,50 @@ class CardView: UIStackView {
         default:
             ()
         }
+    }
+
+    fileprivate func setupGradientLayer() {
+        // Draw a gradient
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
+        gradientLayer.locations = [0.5,1.1]
+        
+        // self.frame = zero frame
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: 300, height: 400)
+        layer.addSublayer(gradientLayer)
+    }
+    
+    fileprivate func setupLayout() {
+        
+        // Keep card bounded
+        layer.cornerRadius = 12
+        clipsToBounds = true
+        imageView.layer.masksToBounds = true
+        
+        // Scales picture on card
+        imageView.contentMode = .scaleAspectFill
+        addSubview(imageView)
+        imageView.fillSuperview()
+        
+        // Add gradient layer
+        setupGradientLayer()
+        
+        addSubview(informationLabel)
+        
+        // Anchor the information label and adds padding
+        informationLabel.anchor(top: nil, leading: self.leadingAnchor, bottom: self.bottomAnchor, trailing: self.trailingAnchor, padding: .init(top: 0, left: 16, bottom: 16, right: 16))
+        
+        
+        /// TODO: Refactor extensions
+        informationLabel.textColor = UIColor.white
+        
+        // Allows multiple lines in label
+        informationLabel.numberOfLines = 0
+    }
+    
+    
+    // Executed everytime the view draws itself
+    override func layoutSubviews() {
+        gradientLayer.frame = self.frame
     }
     
     required init(coder: NSCoder) {
