@@ -10,12 +10,24 @@ import UIKit
 
 class CardView: UIStackView {
     
+    var imageIndex = 0
+    fileprivate let barDeselectedColor = UIColor(white: 0, alpha: 0.1)
     var cardViewModel: CardViewModel! {
         didSet {
             let imageName = cardViewModel.imageNames.first ?? ""
             imageView.image = UIImage(named: imageName)
             informationLabel.attributedText = cardViewModel.attributedString
             informationLabel.textAlignment = cardViewModel.textAlignment
+            
+            // Sub pictures for each user on the horizontal bar
+            (0..<cardViewModel.imageNames.count).forEach { (_) in
+                let barView = UIView()
+                
+                // Keep bars dark unless selected
+                barView.backgroundColor = barDeselectedColor
+                barsStackView.addArrangedSubview(barView)
+            }
+            barsStackView.arrangedSubviews.first?.backgroundColor = .white
         }
     }
     
@@ -23,15 +35,41 @@ class CardView: UIStackView {
     fileprivate let informationLabel = UILabel()
     fileprivate let threshold: CGFloat = 100
     fileprivate let gradientLayer = CAGradientLayer()
+    fileprivate let barsStackView = UIStackView()
+
     
     // Constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupLayout()
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGesture)
+        
+        // Allow selecting different photos in horizontal bars
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap)))
+    }
+    
+    // Change photos on horizontal bars
+    @objc fileprivate func handleTap(gesture: UITapGestureRecognizer) {
+        let tapLocation = gesture.location(in: nil)
+        
+        // If tap location is greater than half the card
+        let shouldAdvanceNextPhoto = tapLocation.x > frame.width / 2 ? true : false
+        if shouldAdvanceNextPhoto {
+            imageIndex = min(imageIndex + 1, cardViewModel.imageNames.count - 1)
+        } else {
+            imageIndex = max(0, imageIndex - 1)
+        }
+        
+        let imageName = cardViewModel.imageNames[imageIndex]
+        imageView.image = UIImage(named: imageName)
+        
+        // Light up the bar that is currently being viewed
+        barsStackView.arrangedSubviews.forEach { (bar) in
+            bar.backgroundColor = barDeselectedColor
+        }
+        barsStackView.arrangedSubviews[imageIndex].backgroundColor = .white
     }
     
     // When user stops touching the screen
@@ -122,6 +160,9 @@ class CardView: UIStackView {
         addSubview(imageView)
         imageView.fillSuperview()
         
+        setupBarsStackView()
+
+        
         // Add gradient layer
         setupGradientLayer()
         
@@ -138,7 +179,13 @@ class CardView: UIStackView {
         informationLabel.numberOfLines = 0
     }
     
-    
+    // Horizontal bars on top of image
+    fileprivate func setupBarsStackView() {
+        addSubview(barsStackView)
+        barsStackView.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, padding: .init(top: 8, left: 8, bottom: 0, right: 8), size: .init(width: 0, height: 4))
+        barsStackView.spacing = 4
+        barsStackView.distribution = .fillEqually
+    }
     // Executed everytime the view draws itself
     override func layoutSubviews() {
         gradientLayer.frame = self.frame
