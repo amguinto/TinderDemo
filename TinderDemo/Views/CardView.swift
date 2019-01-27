@@ -10,8 +10,9 @@ import UIKit
 
 class CardView: UIStackView {
     
-    var imageIndex = 0
+    //var imageIndex = 0
     fileprivate let barDeselectedColor = UIColor(white: 0, alpha: 0.1)
+    
     var cardViewModel: CardViewModel! {
         didSet {
             let imageName = cardViewModel.imageNames.first ?? ""
@@ -28,9 +29,20 @@ class CardView: UIStackView {
                 barsStackView.addArrangedSubview(barView)
             }
             barsStackView.arrangedSubviews.first?.backgroundColor = .white
+            
+            setupImageIndexObserver()
         }
     }
-    
+    fileprivate func setupImageIndexObserver() {
+        cardViewModel.imageIndexObserver = { [weak self] (index, image) in
+            self?.imageView.image = image
+            
+            self?.barsStackView.arrangedSubviews.forEach({ (bar) in
+                bar.backgroundColor = self?.barDeselectedColor
+            })
+            self?.barsStackView.arrangedSubviews[index].backgroundColor = .white
+        }
+    }
     fileprivate let imageView = UIImageView(image: #imageLiteral(resourceName: "lady5c"))
     fileprivate let informationLabel = UILabel()
     fileprivate let threshold: CGFloat = 100
@@ -57,19 +69,10 @@ class CardView: UIStackView {
         // If tap location is greater than half the card
         let shouldAdvanceNextPhoto = tapLocation.x > frame.width / 2 ? true : false
         if shouldAdvanceNextPhoto {
-            imageIndex = min(imageIndex + 1, cardViewModel.imageNames.count - 1)
+            cardViewModel.advanceToNextPhoto()
         } else {
-            imageIndex = max(0, imageIndex - 1)
+            cardViewModel.goToPreviousPhoto()
         }
-        
-        let imageName = cardViewModel.imageNames[imageIndex]
-        imageView.image = UIImage(named: imageName)
-        
-        // Light up the bar that is currently being viewed
-        barsStackView.arrangedSubviews.forEach { (bar) in
-            bar.backgroundColor = barDeselectedColor
-        }
-        barsStackView.arrangedSubviews[imageIndex].backgroundColor = .white
     }
     
     // When user stops touching the screen
